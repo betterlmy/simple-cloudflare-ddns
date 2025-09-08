@@ -67,12 +67,90 @@ go build -o myddns .
 ./myddns -config config.json
 ```
 
+**Method 3: Docker Run (Recommended)**
+```bash
+# Pull from Docker Hub
+docker pull betterlmy/simple-cloudflare-ddns:latest
+
+# Run once
+docker run --rm -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest ./scfddns -config /app/config.json -once
+
+# Run as daemon
+docker run -d --name cloudflare-ddns --restart unless-stopped -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest
+```
+
+**Method 4: Docker Compose (Easiest)**
+```bash
+# Create docker-compose.yml and run
+docker-compose up -d
+```
+
 ## 🎛️ Command Line Arguments - Simple and Flexible
 
 | Parameter | Description | Example |
 |-----------|-------------|---------|
 | `-config` | Configuration file path | `-config /path/to/config.json` |
 | `-once` | Run once and exit | `-once` (suitable for cron) |
+
+## 🐳 Docker Deployment - Production Ready
+
+### Quick Start with Docker
+```bash
+# 1. Pull the image
+docker pull betterlmy/simple-cloudflare-ddns:latest
+
+# 2. Prepare your config.json file
+# 3. Run
+docker run -d \
+  --name cloudflare-ddns \
+  --restart unless-stopped \
+  -v /path/to/your/config.json:/app/config.json:ro \
+  betterlmy/simple-cloudflare-ddns:latest
+```
+
+### Docker Compose (Recommended)
+Create `docker-compose.yml`:
+```yaml
+version: "3.8"
+services:
+  cloudflare-ddns:
+    image: betterlmy/simple-cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+    environment:
+      - TZ=UTC  # Set your timezone
+```
+
+Then run:
+```bash
+docker-compose up -d
+```
+
+### Build Your Own Image
+```bash
+# Clone the repository
+git clone https://github.com/betterlmy/simple-cloudflare-ddns.git
+cd simple-cloudflare-ddns
+
+# Build the image
+docker build -t simple-cloudflare-ddns:latest .
+
+# Run your custom build
+docker run -d \
+  --name cloudflare-ddns \
+  --restart unless-stopped \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  simple-cloudflare-ddns:latest
+```
+
+### Docker Features
+- 🔒 **Security**: Runs as non-root user
+- 📦 **Minimal**: Only ~19.8MB image size
+- 🚀 **Multi-arch**: Supports AMD64 and ARM64
+- ⚡ **Fast**: Alpine-based for quick startup
+- 🔧 **Configurable**: Environment variables support
 
 ## 🔐 Security & Permissions - Simple and Secure
 

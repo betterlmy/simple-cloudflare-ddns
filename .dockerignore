@@ -1,0 +1,40 @@
+# Git 相关
+.git
+.gitignore
+
+# 构建产物
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+scfddns
+
+# 测试文件
+*_test.go
+
+# 临时文件
+*.tmp
+*.log
+
+# IDE 文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS 文件
+.DS_Store
+Thumbs.db
+
+# Docker 文件
+Dockerfile*
+.dockerignore
+
+# 文档和图片
+README*.md
+LICENSE
+images/
+
+# 本地配置（不要打包真实配置）
+config.json

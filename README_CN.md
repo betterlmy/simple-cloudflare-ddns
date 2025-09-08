@@ -68,6 +68,24 @@ go build -o myddns .
 ./myddns -config config.json
 ```
 
+**方式 3：Docker 运行（推荐）**
+```bash
+# 从 Docker Hub 拉取镜像
+docker pull betterlmy/simple-cloudflare-ddns:latest
+
+# 运行一次
+docker run --rm -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest ./scfddns -config /app/config.json -once
+
+# 后台运行
+docker run -d --name cloudflare-ddns --restart unless-stopped -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest
+```
+
+**方式 4：Docker Compose（最简单）**
+```bash
+# 创建 docker-compose.yml 并运行
+docker-compose up -d
+```
+
 
 ## 🎛️ 命令行参数 - 简单灵活
 
@@ -75,6 +93,66 @@ go build -o myddns .
 |------|------|------|
 | `-config` | 配置文件路径 | `-config /path/to/config.json` |
 | `-once` | 运行一次后退出 | `-once`（适合 cron） |
+
+## 🐳 Docker 部署 - 生产就绪
+
+### Docker 快速开始
+```bash
+# 1. 拉取镜像
+docker pull betterlmy/simple-cloudflare-ddns:latest
+
+# 2. 准备你的 config.json 文件
+# 3. 运行
+docker run -d \
+  --name cloudflare-ddns \
+  --restart unless-stopped \
+  -v /path/to/your/config.json:/app/config.json:ro \
+  betterlmy/simple-cloudflare-ddns:latest
+```
+
+### Docker Compose（推荐）
+创建 `docker-compose.yml`：
+```yaml
+version: "3.8"
+services:
+  cloudflare-ddns:
+    image: betterlmy/simple-cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/app/config.json:ro
+    environment:
+      - TZ=Asia/Shanghai  # 设置时区
+```
+
+然后运行：
+```bash
+docker-compose up -d
+```
+
+### 构建自己的镜像
+```bash
+# 克隆仓库
+git clone https://github.com/betterlmy/simple-cloudflare-ddns.git
+cd simple-cloudflare-ddns
+
+# 构建镜像
+docker build -t simple-cloudflare-ddns:latest .
+
+# 运行自定义构建
+docker run -d \
+  --name cloudflare-ddns \
+  --restart unless-stopped \
+  -v $(pwd)/config.json:/app/config.json:ro \
+  simple-cloudflare-ddns:latest
+```
+
+### Docker 特性
+- 🔒 **安全性**：以非 root 用户运行
+- 📦 **精简**：镜像大小仅约 19.8MB
+- 🚀 **多架构**：支持 AMD64 和 ARM64
+- ⚡ **快速**：基于 Alpine 快速启动
+- 🔧 **可配置**：支持环境变量配置
 
 
 ## 🔐 安全 & 权限 - 简单安全

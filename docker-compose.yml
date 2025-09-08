@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  cloudflare-ddns:
+    build: .
+    container_name: simple-cloudflare-ddns
+    restart: unless-stopped # 容器退出时重启，除非手动停止
+    volumes:
+      # 挂载你的真实配置文件
+      - ./config.json:/app/config.json:ro
+    environment:
+      - TZ=Asia/Shanghai
+    # 如果只想运行一次，可以添加这个参数
+    # command: ["./scfddns", "-config", "/app/config.json", "-once"]
