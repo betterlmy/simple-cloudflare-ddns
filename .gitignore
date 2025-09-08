@@ -27,3 +27,6 @@ Thumbs.db
 # 测试文件
 config_test.json
 
+build/
+.github/
+build.sh
