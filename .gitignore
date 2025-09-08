@@ -1,0 +1,7 @@
+config.json
+cf-ddns
+*.log
+.DS_Store
+bin/
+dist/
+

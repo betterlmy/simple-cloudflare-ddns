@@ -1,0 +1,9 @@
+{
+  "api_token": "D0umKf4n76Ob3_xxxxxxxx",
+  "zone_id": "e04cf1d4xxxxx",
+  "record_name": "local.xxxxxx.com",
+  "record_type": "A",
+  "check_interval_seconds": 300,
+  "ttl": 1,
+  "proxied": true
+}
