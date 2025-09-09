@@ -96,6 +96,8 @@ docker-compose up -d
 
 ## 🐳 Docker 部署 - 生产就绪
 
+> 请添加`*.ipify.org,ifconfig.co,*.icanhazip.com`到你的代理绕过列表中（如果使用代理）。
+
 ### Docker 快速开始
 ```bash
 # 1. 拉取镜像
@@ -113,7 +115,6 @@ docker run -d \
 ### Docker Compose（推荐）
 创建 `docker-compose.yml`：
 ```yaml
-version: "3.8"
 services:
   cloudflare-ddns:
     image: betterlmy/simple-cloudflare-ddns:latest

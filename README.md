@@ -95,6 +95,9 @@ docker-compose up -d
 ## 🐳 Docker Deployment - Production Ready
 
 ### Quick Start with Docker
+
+> Please Add `*.ipify.org,ifconfig.co,*.icanhazip.com` to your bypass proxy list if using a proxy.
+
 ```bash
 # 1. Pull the image
 docker pull betterlmy/simple-cloudflare-ddns:latest
@@ -111,7 +114,6 @@ docker run -d \
 ### Docker Compose (Recommended)
 Create `docker-compose.yml`:
 ```yaml
-version: "3.8"
 services:
   cloudflare-ddns:
     image: betterlmy/simple-cloudflare-ddns:latest

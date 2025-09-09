@@ -162,15 +162,15 @@ func getPublicIP(recordType string) (string, error) {
 	switch recordType {
 	case "AAAA":
 		urls = []string{
-			"https://api6.ipify.org",
 			"https://ipv6.icanhazip.com",
 			"https://ifconfig.co/ip?v=6",
+			"https://api6.ipify.org",
 		}
 	default: // "A" or others fallback to IPv4
 		urls = []string{
-			"https://api.ipify.org",
 			"https://ipv4.icanhazip.com",
 			"https://ifconfig.co/ip?v=4",
+			"https://api.ipify.org",
 		}
 	}
 
