@@ -4,44 +4,27 @@ USE_PROCD=1
 START=99
 STOP=10
 
-PROG=/usr/bin/scfddns
-NAME=cloudflare-ddns
-CONFIG_FILE=/etc/config/cloudflare-ddns
+PROG=/usr/sbin/cloudflare-ddns-wrapper
 
 start_service() {
-	local enabled api_token zone_id record_name record_type check_interval ttl proxied
+	. /lib/functions.sh
 
-	config_load "$NAME"
+	config_load cloudflare-ddns
 	config_get_bool enabled main enabled 0
-	if [ "$enabled" != "1" ]; then
-		return 0
-	fi
+	[ "$enabled" = "1" ] || return 0
 
-	config_get api_token      main api_token      ''
-	config_get zone_id        main zone_id        ''
-	config_get record_name    main record_name    ''
-	config_get record_type    main record_type    'A'
-	config_get check_interval main check_interval '300'
-	config_get ttl            main ttl            ''
-	config_get proxied        main proxied        ''
+	local api_token zone_id record_name
+	config_get api_token   main api_token   ''
+	config_get zone_id     main zone_id     ''
+	config_get record_name main record_name ''
 
 	if [ -z "$api_token" ] || [ -z "$zone_id" ] || [ -z "$record_name" ]; then
-		echo "cloudflare-ddns: CF_API_TOKEN, CF_ZONE_ID and CF_RECORD_NAME must be set in $CONFIG_FILE"
+		echo "cloudflare-ddns: api_token, zone_id, record_name must be set in /etc/config/cloudflare-ddns" >&2
 		return 1
 	fi
 
 	procd_open_instance
 	procd_set_param command "$PROG"
-	procd_set_param env \
-		CF_API_TOKEN="$api_token" \
-		CF_ZONE_ID="$zone_id" \
-		CF_RECORD_NAME="$record_name" \
-		CF_RECORD_TYPE="$record_type" \
-		CF_CHECK_INTERVAL="$check_interval" \
-		CF_TTL="$ttl" \
-		CF_PROXIED="$proxied"
 	procd_set_param respawn
-	procd_set_param stdout 1
-	procd_set_param stderr 1
 	procd_close_instance
 }

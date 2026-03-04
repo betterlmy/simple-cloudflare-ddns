@@ -1,0 +1,21 @@
+#!/bin/sh
+# 从 UCI 配置中读取参数并启动 scfddns
+# 由 procd 调用，无需通过 procd_set_param env 传参
+
+. /lib/functions.sh
+
+LOG_FILE=/var/log/cloudflare-ddns.log
+mkdir -p "$(dirname "$LOG_FILE")"
+
+config_load cloudflare-ddns
+config_get CF_API_TOKEN      main api_token      ''
+config_get CF_ZONE_ID        main zone_id        ''
+config_get CF_RECORD_NAME    main record_name    ''
+config_get CF_RECORD_TYPE    main record_type    'A'
+config_get CF_CHECK_INTERVAL main check_interval '300'
+config_get CF_TTL            main ttl            ''
+config_get CF_PROXIED        main proxied        ''
+
+export CF_API_TOKEN CF_ZONE_ID CF_RECORD_NAME CF_RECORD_TYPE CF_CHECK_INTERVAL CF_TTL CF_PROXIED
+
+exec /usr/bin/scfddns >> "$LOG_FILE" 2>&1

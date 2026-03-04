@@ -1,0 +1,25 @@
+<%+header%>
+
+<h2 class="section-title">Cloudflare DDNS - 日志</h2>
+
+<div class="cbi-map">
+<div class="cbi-section">
+<div class="cbi-section-descr">
+	日志文件：/var/log/cloudflare-ddns.log（重启后清空，最多保留 1000 行）
+</div>
+<pre id="ddns-log" style="background:#111111;color:#00ff00;padding:12px;height:520px;overflow-y:auto;font-size:12px;line-height:1.5;border-radius:4px;white-space:pre-wrap;word-break:break-all"><%=
+	luci.util.pcdata(#log > 0 and log or "暂无日志，请先在「配置」页启用服务。")
+%></pre>
+<script>
+	var el = document.getElementById("ddns-log");
+	if (el) el.scrollTop = el.scrollHeight;
+</script>
+<div style="margin-top:8px">
+	<a class="btn cbi-button cbi-button-apply" href="<%=REQUEST_URI%>">刷新</a>
+	<a class="btn cbi-button cbi-button-reset" href="<%=luci.dispatcher.build_url("admin","services","cloudflare-ddns","log_clear")%>"
+	   onclick="return confirm('确定清空日志文件？')">清空日志</a>
+</div>
+</div>
+</div>
+
+<%+footer%>
