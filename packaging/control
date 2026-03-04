@@ -1,0 +1,7 @@
+Package: cloudflare-ddns
+Version: PKGVERSION
+Architecture: PKGARCH
+Maintainer: betterlmy
+Description: Cloudflare DDNS client for iStoreOS
+ Automatically updates Cloudflare DNS records when your public IP changes.
+ Configured via UCI (/etc/config/cloudflare-ddns).

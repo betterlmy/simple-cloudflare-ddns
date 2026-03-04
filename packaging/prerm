@@ -1,0 +1,3 @@
+#!/bin/sh
+/etc/init.d/cloudflare-ddns stop 2>/dev/null
+/etc/init.d/cloudflare-ddns disable 2>/dev/null

@@ -28,7 +28,6 @@ Thumbs.db
 config_test.json
 
 build/
-.github/
 build.sh
 CLAUDE.md
 .claude/

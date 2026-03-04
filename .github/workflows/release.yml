@@ -1,0 +1,104 @@
+name: Release IPK
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - arch: x86_64
+            goarch: amd64
+            goarm: ''
+          - arch: aarch64
+            goarch: arm64
+            goarm: ''
+          - arch: arm_cortex-a7
+            goarch: arm
+            goarm: '7'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: 解析版本号
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: 编译二进制
+        env:
+          CGO_ENABLED: '0'
+          GOOS: linux
+          GOARCH: ${{ matrix.goarch }}
+          GOARM: ${{ matrix.goarm }}
+        run: go build -ldflags="-s -w" -o scfddns .
+
+      - name: 构建 IPK
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          PKG_NAME=cloudflare-ddns
+          PKG_FILE="${PKG_NAME}_${VERSION}_${ARCH}.ipk"
+
+          BUILD_DIR=$(mktemp -d)
+
+          DATA_DIR="$BUILD_DIR/data"
+          CTRL_DIR="$BUILD_DIR/control"
+          mkdir -p "$DATA_DIR/usr/bin" "$DATA_DIR/etc/init.d" "$DATA_DIR/etc/config"
+          mkdir -p "$CTRL_DIR"
+
+          cp scfddns                              "$DATA_DIR/usr/bin/scfddns"
+          cp packaging/init.d/cloudflare-ddns    "$DATA_DIR/etc/init.d/cloudflare-ddns"
+          cp packaging/default-config             "$DATA_DIR/etc/config/cloudflare-ddns"
+          chmod 755 "$DATA_DIR/usr/bin/scfddns"
+          chmod 755 "$DATA_DIR/etc/init.d/cloudflare-ddns"
+
+          sed -e "s/PKGVERSION/$VERSION/g" \
+              -e "s/PKGARCH/$ARCH/g" \
+              packaging/control > "$CTRL_DIR/control"
+          cp packaging/postinst "$CTRL_DIR/postinst"
+          cp packaging/prerm    "$CTRL_DIR/prerm"
+          chmod 755 "$CTRL_DIR/postinst" "$CTRL_DIR/prerm"
+
+          echo "2.0" > "$BUILD_DIR/debian-binary"
+          (cd "$DATA_DIR" && tar czf "$BUILD_DIR/data.tar.gz" .)
+          (cd "$CTRL_DIR" && tar czf "$BUILD_DIR/control.tar.gz" .)
+
+          ar r "$PKG_FILE" \
+            "$BUILD_DIR/debian-binary" \
+            "$BUILD_DIR/control.tar.gz" \
+            "$BUILD_DIR/data.tar.gz"
+
+          echo "ipk_file=$PKG_FILE" >> "$GITHUB_ENV"
+
+      - name: 上传 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipk-${{ matrix.arch }}
+          path: cloudflare-ddns_*.ipk
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 下载所有 artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ipk-*
+          merge-multiple: true
+
+      - name: 创建 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: cloudflare-ddns_*.ipk
+          generate_release_notes: true

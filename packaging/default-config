@@ -1,0 +1,6 @@
+config cloudflare-ddns 'main'
+	option api_token      ''
+	option zone_id        ''
+	option record_name    ''
+	option record_type    'A'
+	option check_interval '300'
