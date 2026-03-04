@@ -1,4 +1,5 @@
 # Simple Cloudflare DDNS
+[![Release IPK](https://github.com/betterlmy/simple-cloudflare-ddns/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/betterlmy/simple-cloudflare-ddns/actions/workflows/release.yml)
 
 [中文版本 / Chinese Version](README_CN.md)
 
