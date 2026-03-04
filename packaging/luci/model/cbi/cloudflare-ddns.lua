@@ -16,11 +16,12 @@ m.on_after_commit = function(self)
 	local enabled = self.uci:get("cloudflare-ddns", "main", "enabled")
 	if enabled == "1" then
 		os.execute(": > /var/log/cloudflare-ddns.log 2>/dev/null")
-		os.execute("setsid /etc/init.d/cloudflare-ddns enable >/dev/null 2>&1 </dev/null")
-		os.execute("setsid /etc/init.d/cloudflare-ddns restart >/dev/null 2>&1 </dev/null")
+		os.execute("/etc/init.d/cloudflare-ddns enable >/dev/null 2>&1")
+		os.execute("/usr/sbin/cloudflare-ddns-ctl stop >/dev/null 2>&1")
+		os.execute("/usr/sbin/cloudflare-ddns-ctl start >/dev/null 2>&1")
 	else
-		os.execute("setsid /etc/init.d/cloudflare-ddns stop >/dev/null 2>&1 </dev/null")
-		os.execute("setsid /etc/init.d/cloudflare-ddns disable >/dev/null 2>&1 </dev/null")
+		os.execute("/usr/sbin/cloudflare-ddns-ctl stop >/dev/null 2>&1")
+		os.execute("/etc/init.d/cloudflare-ddns disable >/dev/null 2>&1")
 	end
 end
 

@@ -54,6 +54,7 @@ mkdir -p "$CTRL_DIR"
 
 cp "$BINARY"                                         "$DATA_DIR/usr/bin/scfddns"
 cp packaging/cloudflare-ddns-wrapper                 "$DATA_DIR/usr/sbin/cloudflare-ddns-wrapper"
+cp packaging/cloudflare-ddns-ctl                     "$DATA_DIR/usr/sbin/cloudflare-ddns-ctl"
 cp packaging/init.d/cloudflare-ddns                  "$DATA_DIR/etc/init.d/cloudflare-ddns"
 cp packaging/default-config                           "$DATA_DIR/etc/config/cloudflare-ddns"
 cp packaging/luci/controller/cloudflare-ddns.lua      "$DATA_DIR/usr/lib/lua/luci/controller/cloudflare-ddns.lua"
@@ -61,6 +62,7 @@ cp packaging/luci/model/cbi/cloudflare-ddns.lua       "$DATA_DIR/usr/lib/lua/luc
 cp packaging/luci/view/cloudflare-ddns/log.htm        "$DATA_DIR/usr/lib/lua/luci/view/cloudflare-ddns/log.htm"
 chmod 755 "$DATA_DIR/usr/bin/scfddns"
 chmod 755 "$DATA_DIR/usr/sbin/cloudflare-ddns-wrapper"
+chmod 755 "$DATA_DIR/usr/sbin/cloudflare-ddns-ctl"
 chmod 755 "$DATA_DIR/etc/init.d/cloudflare-ddns"
 
 sed -e "s/PKGVERSION/$VERSION/g" \

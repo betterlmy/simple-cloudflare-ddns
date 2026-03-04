@@ -1,0 +1,17 @@
+#!/bin/sh
+# cloudflare-ddns-ctl start|stop
+# 直接通过 ubus 与 procd 通信，绕过 init.d 调用链，兼容从 uhttpd 调用的场景
+
+case "$1" in
+  start)
+    ubus call service set '{"name":"cloudflare-ddns","script":"/etc/init.d/cloudflare-ddns","instances":{"instance1":{"command":["/usr/sbin/cloudflare-ddns-wrapper"],"respawn":["3600","5","5"]}},"triggers":[]}'
+    ;;
+  stop)
+    ubus call service set '{"name":"cloudflare-ddns","script":"/etc/init.d/cloudflare-ddns","instances":{},"triggers":[]}'
+    killall scfddns 2>/dev/null
+    ;;
+  *)
+    echo "Usage: $0 start|stop" >&2
+    exit 1
+    ;;
+esac
