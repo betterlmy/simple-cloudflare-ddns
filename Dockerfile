@@ -1,6 +1,6 @@
 # 多阶段构建
 # 第一阶段：构建阶段
-FROM golang:1.22-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -17,8 +17,10 @@ RUN go mod download
 # 复制源代码
 COPY . .
 
-# 构建应用
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+# 构建应用（使用 TARGETARCH/TARGETOS 支持多架构交叉编译）
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build \
     -ldflags='-w -s -extldflags "-static"' \
     -a -installsuffix cgo \
     -o scfddns .
@@ -39,17 +41,11 @@ WORKDIR /app
 # 从构建阶段复制二进制文件
 COPY --from=builder /app/scfddns .
 
-# 复制配置文件示例
-COPY config_demo.json ./config_demo.json
-
 # 更改文件权限
 RUN chown -R appuser:appgroup /app
 
 # 切换到非 root 用户
 USER appuser
 
-# 设置默认配置文件路径
-ENV CONFIG_PATH=/app/config.json
-
-# 启动命令
-CMD ["./scfddns", "-config", "/app/config.json"]
+# 配置通过环境变量传入（CF_API_TOKEN、CF_ZONE_ID、CF_RECORD_NAME、CF_RECORD_TYPE 等）
+CMD ["./scfddns"]

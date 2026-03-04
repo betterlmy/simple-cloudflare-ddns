@@ -1,128 +1,89 @@
-# 🌟 Simple Cloudflare DDNS
-
-> 🎯 **Minimalist Design** | ⚡ **Ready to Use** | 🔧 **Zero Complex Configuration**
+# Simple Cloudflare DDNS
 
 [中文版本 / Chinese Version](README_CN.md)
 
-A **super simple** Cloudflare Dynamic DNS client! With just one configuration file and one command, you can keep your domain name always pointing to the correct IP address.
+A minimal Cloudflare Dynamic DNS client written in Go. No dependencies, single binary, configured entirely via environment variables.
 
-## 🔧 How It Works - Simple and Clear
+**How it works**: Detect public IP → Compare with Cloudflare DNS → Update if changed
 
-Detect Public IP → Smart Comparison → Update DNS → Done
+## Features
 
-## 🚀 Core Features - Simplicity to the Extreme
-- 🎯 **Smart IP Detection**: Automatically selects the best service (ipify/icanhazip/ifconfig)
-- ⏰ **Scheduled Auto-Update**: Customizable check intervals, fully automated
-- 🧠 **Service Memory**: Intelligently remembers the last used service
-- 🎨 **Elegant Design**: Only updates DNS when IP actually changes
-- 📦 **Out-of-the-Box**: No complex configuration needed, clear and easy structure
+- Auto-selects the fastest IP detection service (icanhazip / ifconfig.co / ipify)
+- Remembers the last successful service to minimize latency
+- Only calls Cloudflare API when IP actually changes
+- IPv4 (`A`) and IPv6 (`AAAA`) support
+- Single-run mode for cron jobs
 
-## 🛠️ Runtime Environment
+## Requirements
 
-> **True Simplicity**: Only requires Go environment, or even without!
+- Go 1.18+ (or use Docker)
+- Access to Cloudflare API
 
-- **Go 1.18+** (Go 1.22 recommended)
-- Network environment with access to Cloudflare API
-- **Supported Platforms**: Windows / macOS / Linux / Any platform that can install Go
+## Configuration
 
-## ⚡ 3-Minute Quick Start
+All configuration is done via environment variables:
 
-### Step 1: Prepare Configuration File
-```bash
-# Copy example configuration
-cp config_demo.json config.json
-```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `CF_API_TOKEN` | ✅ | Cloudflare API token (DNS edit permission) |
+| `CF_ZONE_ID` | ✅ | Cloudflare Zone ID |
+| `CF_RECORD_NAME` | ✅ | DNS record to update, e.g. `home.example.com` |
+| `CF_RECORD_TYPE` | ✅ | `A` (IPv4) or `AAAA` (IPv6) |
+| `CF_CHECK_INTERVAL` | — | Check interval in seconds (default: `300`) |
+| `CF_TTL` | — | DNS TTL in seconds (default: inherits existing record) |
+| `CF_PROXIED` | — | `true` or `false` (default: inherits existing record) |
 
-Edit `config.json`, just fill in these essential fields:
-```json
-{
-  "api_token": "your-cloudflare-api-token",
-  "zone_id": "your-zone-id", 
-  "record_name": "home.example.com",
-  "record_type": "A",
-  "check_interval_seconds": 300
-}
-```
+## Quick Start
 
-> 💡 **Configuration Explanation**:
-> - `api_token`: Cloudflare API Token (requires DNS edit permission)
-> - `zone_id`: Cloudflare Zone ID 
-> - `record_name`: Complete domain name to update
-> - `record_type`: `A` (IPv4) or `AAAA` (IPv6)
-> - `check_interval_seconds`: Check interval (seconds)
-
-### Step 2: Run
-
-**Method 1: Direct Run**
-```bash
-go run main.go -config config.json
-```
-
-**Method 2: Compile and Run**
-```bash
-# Compile
-go build -o myddns .
-
-# Run
-./myddns -config config.json
-```
-
-**Method 3: Docker Run (Recommended)**
-```bash
-# Pull from Docker Hub
-docker pull betterlmy/simple-cloudflare-ddns:latest
-
-# Run once
-docker run --rm -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest ./scfddns -config /app/config.json -once
-
-# Run as daemon
-docker run -d --name cloudflare-ddns --restart unless-stopped -v $(pwd)/config.json:/app/config.json betterlmy/simple-cloudflare-ddns:latest
-```
-
-**Method 4: Docker Compose (Easiest)**
-```bash
-# Create docker-compose.yml and run
-docker-compose up -d
-```
-
-## 🎛️ Command Line Arguments - Simple and Flexible
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| `-config` | Configuration file path | `-config /path/to/config.json` |
-| `-once` | Run once and exit | `-once` (suitable for cron) |
-
-## 🐳 Docker Deployment - Production Ready
-
-### Quick Start with Docker
-
-> Please Add `*.ipify.org,ifconfig.co,*.icanhazip.com` to your bypass proxy list if using a proxy.
+### Run directly
 
 ```bash
-# 1. Pull the image
-docker pull betterlmy/simple-cloudflare-ddns:latest
+export CF_API_TOKEN=your-token
+export CF_ZONE_ID=your-zone-id
+export CF_RECORD_NAME=home.example.com
+export CF_RECORD_TYPE=A
 
-# 2. Prepare your config.json file
-# 3. Run
+go run main.go
+```
+
+### Compile and run
+
+```bash
+go build -o scfddns .
+./scfddns
+```
+
+### Run once (for cron)
+
+```bash
+./scfddns -once
+```
+
+## Docker
+
+> If using a proxy, add `*.ipify.org`, `ifconfig.co`, `*.icanhazip.com` to your bypass list.
+
+### Docker run
+
+```bash
 docker run -d \
   --name cloudflare-ddns \
   --restart unless-stopped \
-  -v /path/to/your/config.json:/app/config.json:ro \
+  -e CF_API_TOKEN=your-token \
+  -e CF_ZONE_ID=your-zone-id \
+  -e CF_RECORD_NAME=home.example.com \
+  -e CF_RECORD_TYPE=A \
   betterlmy/simple-cloudflare-ddns:latest
 ```
 
-### Docker Compose (Recommended)
-Create `docker-compose.yml`:
-```yaml
-services:
-  cloudflare-ddns:
-    image: betterlmy/simple-cloudflare-ddns:latest
-    container_name: cloudflare-ddns
-    restart: unless-stopped
-    volumes:
-      - ./config.json:/app/config.json:ro
-    environment:
-      - TZ=UTC  # Set your timezone
+### Docker Compose
+
+Create a `.env` file:
+```env
+CF_API_TOKEN=your-token
+CF_ZONE_ID=your-zone-id
+CF_RECORD_NAME=home.example.com
+CF_RECORD_TYPE=A
 ```
 
 Then run:
@@ -130,85 +91,70 @@ Then run:
 docker-compose up -d
 ```
 
-### Build Your Own Image
+### Build your own image
+
 ```bash
-# Clone the repository
 git clone https://github.com/betterlmy/simple-cloudflare-ddns.git
 cd simple-cloudflare-ddns
-
-# Build the image
 docker build -t simple-cloudflare-ddns:latest .
-
-# Run your custom build
-docker run -d \
-  --name cloudflare-ddns \
-  --restart unless-stopped \
-  -v $(pwd)/config.json:/app/config.json:ro \
-  simple-cloudflare-ddns:latest
 ```
 
-### Docker Features
-- 🔒 **Security**: Runs as non-root user
-- 📦 **Minimal**: Only ~19.8MB image size
-- 🚀 **Multi-arch**: Supports AMD64 and ARM64
-- ⚡ **Fast**: Alpine-based for quick startup
-- 🔧 **Configurable**: Environment variables support
+### Docker image features
+- Runs as non-root user
+- Multi-arch: AMD64 and ARM64
+- Alpine-based (~20MB)
 
-## 🔐 Security & Permissions - Simple and Secure
+## Command Line Arguments
 
-> **Principle of Least Privilege**: Only request necessary permissions
+| Flag | Description |
+|------|-------------|
+| `-once` | Run once and exit (suitable for cron) |
 
-### Create Minimal Permission Cloudflare API Token:
+## How to Get Cloudflare Credentials
+
+### API Token
 1. Go to [Cloudflare API Tokens](https://dash.cloudflare.com/profile/api-tokens)
 2. Click "Create Token" → "Edit zone DNS" → "Use template"
-![alt text](images/dnsmodule.png)
-3. Configure permissions:
-   - **Permissions**: `Zone:DNS:Edit`
-   - **Zone Resources**: Select your target domain
-![config](images/config.png)
-4. Create and copy the generated Token
+   ![dns module](images/dnsmodule.png)
+3. Set permissions: `Zone:DNS:Edit`, select your zone
+   ![config](images/config.png)
+4. Copy the generated token
 
-### Security Tips:
-- Do not commit `config.json` to code repository
-- When Token is leaked, immediately revoke and regenerate in Cloudflare dashboard
-
-## 🌍 How to Get Zone ID:
+### Zone ID
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
 2. Select your domain
-3. Find "Zone ID" in the bottom right corner of the "Overview" page
-![zone-id](images/zoneId.png)
+3. Find "Zone ID" in the bottom-right of the Overview page
+   ![zone-id](images/zoneId.png)
 
-## ❓ FAQ - Simple Answers
+## FAQ
 
 <details>
 <summary><strong>Can't get public IP?</strong></summary>
 
-- ✅ The program will automatically try multiple services
-- 🔍 When all fail, check network connection or proxy settings
-- 💡 Usually a network issue, restart the program to resolve
+- The program tries multiple services automatically
+- If all fail, check your network connection or proxy bypass list
+- Restart the program to retry
 </details>
 
 <details>
 <summary><strong>DNS update not taking effect?</strong></summary>
 
-- ✅ Confirm `zone_id`, `record_name`, `record_type` are filled correctly
-- 🔑 Check if API Token permissions are sufficient
-- 🔍 Check if Cloudflare console has records with same name but different type
+- Verify `CF_ZONE_ID`, `CF_RECORD_NAME`, and `CF_RECORD_TYPE` are correct
+- Check that the API token has DNS edit permission
+- Make sure there's no conflicting record of a different type in Cloudflare
 </details>
 
 <details>
 <summary><strong>Updates too frequent?</strong></summary>
 
-- 🔧 Appropriately increase `check_interval_seconds` value
-- 🌐 Check if network environment frequently changes exit IP
-- 💡 Recommend 300-600 second intervals for home users
+- Increase `CF_CHECK_INTERVAL` (recommended: 300–600 seconds for home users)
 </details>
 
-## 📄 License
+## License
 
-MIT License - Simple and free, use as you wish 🎉
+MIT License
 
 ---
 <div align="center">
-⭐ If you find it useful, please give a Star to support～
+⭐ If you find it useful, please give a Star!
 </div>
