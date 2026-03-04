@@ -1,6 +1,8 @@
 #!/bin/sh
 chmod +x /etc/init.d/cloudflare-ddns
 /etc/init.d/cloudflare-ddns enable
+rm -rf /tmp/luci-indexcache /tmp/luci-modulecache 2>/dev/null
 echo "cloudflare-ddns installed."
-echo "Edit /etc/config/cloudflare-ddns to configure, then run:"
+echo "Configure via LuCI: Services > Cloudflare DDNS"
+echo "Or edit /etc/config/cloudflare-ddns directly, then run:"
 echo "  /etc/init.d/cloudflare-ddns start"

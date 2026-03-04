@@ -53,11 +53,15 @@ jobs:
           DATA_DIR="$BUILD_DIR/data"
           CTRL_DIR="$BUILD_DIR/control"
           mkdir -p "$DATA_DIR/usr/bin" "$DATA_DIR/etc/init.d" "$DATA_DIR/etc/config"
+          mkdir -p "$DATA_DIR/usr/lib/lua/luci/controller"
+          mkdir -p "$DATA_DIR/usr/lib/lua/luci/model/cbi"
           mkdir -p "$CTRL_DIR"
 
-          cp scfddns                              "$DATA_DIR/usr/bin/scfddns"
-          cp packaging/init.d/cloudflare-ddns    "$DATA_DIR/etc/init.d/cloudflare-ddns"
-          cp packaging/default-config             "$DATA_DIR/etc/config/cloudflare-ddns"
+          cp scfddns                                           "$DATA_DIR/usr/bin/scfddns"
+          cp packaging/init.d/cloudflare-ddns                 "$DATA_DIR/etc/init.d/cloudflare-ddns"
+          cp packaging/default-config                          "$DATA_DIR/etc/config/cloudflare-ddns"
+          cp packaging/luci/controller/cloudflare-ddns.lua     "$DATA_DIR/usr/lib/lua/luci/controller/cloudflare-ddns.lua"
+          cp packaging/luci/model/cbi/cloudflare-ddns.lua      "$DATA_DIR/usr/lib/lua/luci/model/cbi/cloudflare-ddns.lua"
           chmod 755 "$DATA_DIR/usr/bin/scfddns"
           chmod 755 "$DATA_DIR/etc/init.d/cloudflare-ddns"
 

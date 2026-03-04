@@ -1,4 +1,5 @@
 config cloudflare-ddns 'main'
+	option enabled        '0'
 	option api_token      ''
 	option zone_id        ''
 	option record_name    ''

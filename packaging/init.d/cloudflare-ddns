@@ -9,16 +9,21 @@ NAME=cloudflare-ddns
 CONFIG_FILE=/etc/config/cloudflare-ddns
 
 start_service() {
-	local api_token zone_id record_name record_type check_interval ttl proxied
+	local enabled api_token zone_id record_name record_type check_interval ttl proxied
 
 	config_load "$NAME"
-	config_get api_token    main api_token    ''
-	config_get zone_id      main zone_id      ''
-	config_get record_name  main record_name  ''
-	config_get record_type  main record_type  'A'
+	config_get_bool enabled main enabled 0
+	if [ "$enabled" != "1" ]; then
+		return 0
+	fi
+
+	config_get api_token      main api_token      ''
+	config_get zone_id        main zone_id        ''
+	config_get record_name    main record_name    ''
+	config_get record_type    main record_type    'A'
 	config_get check_interval main check_interval '300'
-	config_get ttl          main ttl          ''
-	config_get proxied      main proxied      ''
+	config_get ttl            main ttl            ''
+	config_get proxied        main proxied        ''
 
 	if [ -z "$api_token" ] || [ -z "$zone_id" ] || [ -z "$record_name" ]; then
 		echo "cloudflare-ddns: CF_API_TOKEN, CF_ZONE_ID and CF_RECORD_NAME must be set in $CONFIG_FILE"
