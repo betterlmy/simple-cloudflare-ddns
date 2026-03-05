@@ -8,7 +8,7 @@
 
 ## 功能特性
 
-- 自动选择最快的 IP 检测服务（icanhazip / ifconfig.co / ipify）
+- 根据记录类型自动选择对应的 IP 检测服务（icanhazip / ifconfig.co / ipify 的 IPv4 或 IPv6 端点）
 - 记忆上次成功的服务，减少延迟
 - 仅在 IP 真正变化时才调用 Cloudflare API
 - 支持 IPv4（`A` 记录）和 IPv6（`AAAA` 记录）
@@ -32,7 +32,7 @@
 | `CF_CHECK_INTERVAL` | —    | 检查间隔（秒），默认 `300`                              |
 | `CF_TTL`            | —    | DNS TTL（秒），默认沿用 Cloudflare 现有记录             |
 | `CF_PROXIED`        | —    | `true` 或 `false`，默认沿用 Cloudflare 现有记录         |
-| `CF_IP_URLS`        | —    | 逗号分隔的 IP 检测服务 URL 列表，留空则使用内置默认地址 |
+| `CF_IP_URLS`        | —    | 逗号分隔的 IP 检测服务 URL 列表，留空则根据 `CF_RECORD_TYPE` 自动选择内置默认地址 |
 
 ## 快速开始
 

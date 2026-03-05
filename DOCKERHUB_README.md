@@ -5,7 +5,7 @@ A minimal Cloudflare Dynamic DNS client written in Go. No dependencies, single b
 **How it works**: Detect public IP → Compare with Cloudflare DNS record → Update only when changed
 
 - IPv4 (`A`) and IPv6 (`AAAA`) support
-- Auto-selects the fastest IP detection service (icanhazip / ifconfig.co / ipify)
+- Auto-selects IP detection service based on record type (IPv4 or IPv6 endpoints of icanhazip / ifconfig.co / ipify)
 - Multi-arch: `linux/amd64`, `linux/arm64`
 - Runs as non-root user, Alpine-based (~20MB)
 
@@ -41,16 +41,16 @@ services:
 
 ## Environment Variables
 
-| Variable            | Required | Description                                                        |
-| ------------------- | -------- | ------------------------------------------------------------------ |
-| `CF_API_TOKEN`      | Yes      | Cloudflare API token (DNS edit permission)                         |
-| `CF_ZONE_ID`        | Yes      | Cloudflare Zone ID                                                 |
-| `CF_RECORD_NAME`    | Yes      | DNS record to update, e.g. `home.example.com`                      |
-| `CF_RECORD_TYPE`    | Yes      | `A` (IPv4) or `AAAA` (IPv6)                                        |
-| `CF_CHECK_INTERVAL` | No       | Check interval in seconds (default: `300`)                         |
-| `CF_TTL`            | No       | DNS TTL in seconds (default: inherits existing record)             |
-| `CF_PROXIED`        | No       | `true` or `false` (default: inherits existing record)              |
-| `CF_IP_URLS`        | No       | Comma-separated IP detection service URLs (default: built-in list) |
+| Variable            | Required | Description                                                                                                 |
+| ------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `CF_API_TOKEN`      | Yes      | Cloudflare API token (DNS edit permission)                                                                  |
+| `CF_ZONE_ID`        | Yes      | Cloudflare Zone ID                                                                                          |
+| `CF_RECORD_NAME`    | Yes      | DNS record to update, e.g. `home.example.com`                                                               |
+| `CF_RECORD_TYPE`    | Yes      | `A` (IPv4) or `AAAA` (IPv6)                                                                                 |
+| `CF_CHECK_INTERVAL` | No       | Check interval in seconds (default: `300`)                                                                  |
+| `CF_TTL`            | No       | DNS TTL in seconds (default: inherits existing record)                                                      |
+| `CF_PROXIED`        | No       | `true` or `false` (default: inherits existing record)                                                       |
+| `CF_IP_URLS`        | No       | Comma-separated IP detection service URLs (default: built-in list, auto-selected based on `CF_RECORD_TYPE`) |
 
 ## How to Get Cloudflare Credentials
 

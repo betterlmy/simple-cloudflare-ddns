@@ -9,7 +9,7 @@ A minimal Cloudflare Dynamic DNS client written in Go. No dependencies, single b
 
 ## Features
 
-- Auto-selects the fastest IP detection service (icanhazip / ifconfig.co / ipify)
+- Auto-selects IP detection service based on record type (IPv4 or IPv6 endpoints of icanhazip / ifconfig.co / ipify)
 - Remembers the last successful service to minimize latency
 - Only calls Cloudflare API when IP actually changes
 - IPv4 (`A`) and IPv6 (`AAAA`) support
@@ -33,7 +33,7 @@ All configuration is done via environment variables:
 | `CF_CHECK_INTERVAL` | —        | Check interval in seconds (default: `300`)                         |
 | `CF_TTL`            | —        | DNS TTL in seconds (default: inherits existing record)             |
 | `CF_PROXIED`        | —        | `true` or `false` (default: inherits existing record)              |
-| `CF_IP_URLS`        | —        | Comma-separated IP detection service URLs (default: built-in list) |
+| `CF_IP_URLS`        | —        | Comma-separated IP detection service URLs (default: built-in list, auto-selected based on `CF_RECORD_TYPE`) |
 
 ## Quick Start
 
