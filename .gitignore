@@ -1,5 +1,6 @@
 # 配置文件（包含敏感信息）
 config.json
+.env
 
 # 构建产物
 cf-ddns
@@ -29,6 +30,5 @@ config_test.json
 
 build/
 build.sh
-CLAUDE.md
 .claude/
 *.ipk

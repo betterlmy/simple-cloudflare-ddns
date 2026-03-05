@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -30,6 +31,7 @@ import (
 //	CF_CHECK_INTERVAL - Check interval in seconds (default 300)
 //	CF_TTL            - DNS TTL in seconds
 //	CF_PROXIED        - Proxy through Cloudflare: true or false
+//	CF_IP_URLS        - Comma-separated list of IP detection service URLs (default: built-in list)
 type Config struct {
 	APIToken             string
 	ZoneId               string
@@ -38,6 +40,7 @@ type Config struct {
 	CheckIntervalSeconds uint
 	TTL                  *int
 	Proxied              *bool
+	IPURLs               []string
 }
 
 // CloudflareError represents a single error from the Cloudflare API
@@ -138,7 +141,7 @@ func runUpdate(config *Config) {
 	log.Println("---------------------------------")
 	log.Println("Starting IP address check...")
 
-	publicIP, err := getPublicIP(config.RecordType)
+	publicIP, err := getPublicIP(config.RecordType, config.IPURLs)
 	if err != nil {
 		log.Printf("Error: Failed to get public IP: %v", err)
 		return
@@ -195,6 +198,14 @@ func loadConfigFromEnv() (Config, error) {
 		}
 		config.Proxied = &b
 	}
+	if v := os.Getenv("CF_IP_URLS"); v != "" {
+		for _, u := range strings.Split(v, ",") {
+			u = strings.TrimSpace(u)
+			if u != "" {
+				config.IPURLs = append(config.IPURLs, u)
+			}
+		}
+	}
 
 	return config, nil
 }
@@ -217,20 +228,24 @@ func validateConfig(config *Config) error {
 }
 
 // getPublicIP gets public IP from external services
-func getPublicIP(recordType string) (string, error) {
+func getPublicIP(recordType string, customURLs []string) (string, error) {
 	var urls []string
-	switch recordType {
-	case "AAAA":
-		urls = []string{
-			"https://ipv6.icanhazip.com",
-			"https://ifconfig.co/ip?v=6",
-			"https://api6.ipify.org",
-		}
-	default:
-		urls = []string{
-			"https://ipv4.icanhazip.com",
-			"https://ifconfig.co/ip?v=4",
-			"https://api.ipify.org",
+	if len(customURLs) > 0 {
+		urls = customURLs
+	} else {
+		switch recordType {
+		case "AAAA":
+			urls = []string{
+				"https://ipv6.icanhazip.com",
+				"https://ifconfig.co/ip?v=6",
+				"https://api6.ipify.org",
+			}
+		default:
+			urls = []string{
+				"https://ipv4.icanhazip.com",
+				"https://ifconfig.co/ip?v=4",
+				"https://api.ipify.org",
+			}
 		}
 	}
 

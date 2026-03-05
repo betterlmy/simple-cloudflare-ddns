@@ -23,15 +23,16 @@
 
 所有配置通过环境变量传入：
 
-| 变量名 | 必填 | 说明 |
-|--------|------|------|
-| `CF_API_TOKEN` | ✅ | Cloudflare API Token（需要 DNS 编辑权限） |
-| `CF_ZONE_ID` | ✅ | Cloudflare Zone ID |
-| `CF_RECORD_NAME` | ✅ | 要更新的 DNS 记录，如 `home.example.com` |
-| `CF_RECORD_TYPE` | ✅ | `A`（IPv4）或 `AAAA`（IPv6） |
-| `CF_CHECK_INTERVAL` | — | 检查间隔（秒），默认 `300` |
-| `CF_TTL` | — | DNS TTL（秒），默认沿用 Cloudflare 现有记录 |
-| `CF_PROXIED` | — | `true` 或 `false`，默认沿用 Cloudflare 现有记录 |
+| 变量名              | 必填 | 说明                                                    |
+| ------------------- | ---- | ------------------------------------------------------- |
+| `CF_API_TOKEN`      | ✅    | Cloudflare API Token（需要 DNS 编辑权限）               |
+| `CF_ZONE_ID`        | ✅    | Cloudflare Zone ID                                      |
+| `CF_RECORD_NAME`    | ✅    | 要更新的 DNS 记录，如 `home.example.com`                |
+| `CF_RECORD_TYPE`    | ✅    | `A`（IPv4）或 `AAAA`（IPv6）                            |
+| `CF_CHECK_INTERVAL` | —    | 检查间隔（秒），默认 `300`                              |
+| `CF_TTL`            | —    | DNS TTL（秒），默认沿用 Cloudflare 现有记录             |
+| `CF_PROXIED`        | —    | `true` 或 `false`，默认沿用 Cloudflare 现有记录         |
+| `CF_IP_URLS`        | —    | 逗号分隔的 IP 检测服务 URL 列表，留空则使用内置默认地址 |
 
 ## 快速开始
 
@@ -106,8 +107,8 @@ docker build -t simple-cloudflare-ddns:latest .
 
 ## 命令行参数
 
-| 参数 | 说明 |
-|------|------|
+| 参数    | 说明                                 |
+| ------- | ------------------------------------ |
 | `-once` | 运行一次后退出（适合 cron 定时任务） |
 
 ## 如何获取 Cloudflare 凭证

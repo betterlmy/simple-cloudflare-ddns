@@ -60,4 +60,9 @@ o = s:option(Value, "check_interval", translate("检查间隔（秒）"))
 o.datatype = "uinteger"
 o.default  = "300"
 
+o = s:option(Value, "ip_urls", translate("IP 检测服务地址"),
+	translate("逗号分隔的 URL 列表，留空则使用内置默认地址（icanhazip / ifconfig.co / ipify）。"))
+o.placeholder = "https://ipv4.icanhazip.com,https://api.ipify.org"
+o.rmempty  = true
+
 return m

@@ -24,15 +24,16 @@ A minimal Cloudflare Dynamic DNS client written in Go. No dependencies, single b
 
 All configuration is done via environment variables:
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CF_API_TOKEN` | ✅ | Cloudflare API token (DNS edit permission) |
-| `CF_ZONE_ID` | ✅ | Cloudflare Zone ID |
-| `CF_RECORD_NAME` | ✅ | DNS record to update, e.g. `home.example.com` |
-| `CF_RECORD_TYPE` | ✅ | `A` (IPv4) or `AAAA` (IPv6) |
-| `CF_CHECK_INTERVAL` | — | Check interval in seconds (default: `300`) |
-| `CF_TTL` | — | DNS TTL in seconds (default: inherits existing record) |
-| `CF_PROXIED` | — | `true` or `false` (default: inherits existing record) |
+| Variable            | Required | Description                                                        |
+| ------------------- | -------- | ------------------------------------------------------------------ |
+| `CF_API_TOKEN`      | ✅        | Cloudflare API token (DNS edit permission)                         |
+| `CF_ZONE_ID`        | ✅        | Cloudflare Zone ID                                                 |
+| `CF_RECORD_NAME`    | ✅        | DNS record to update, e.g. `home.example.com`                      |
+| `CF_RECORD_TYPE`    | ✅        | `A` (IPv4) or `AAAA` (IPv6)                                        |
+| `CF_CHECK_INTERVAL` | —        | Check interval in seconds (default: `300`)                         |
+| `CF_TTL`            | —        | DNS TTL in seconds (default: inherits existing record)             |
+| `CF_PROXIED`        | —        | `true` or `false` (default: inherits existing record)              |
+| `CF_IP_URLS`        | —        | Comma-separated IP detection service URLs (default: built-in list) |
 
 ## Quick Start
 
@@ -107,8 +108,8 @@ docker build -t simple-cloudflare-ddns:latest .
 
 ## Command Line Arguments
 
-| Flag | Description |
-|------|-------------|
+| Flag    | Description                           |
+| ------- | ------------------------------------- |
 | `-once` | Run once and exit (suitable for cron) |
 
 ## How to Get Cloudflare Credentials

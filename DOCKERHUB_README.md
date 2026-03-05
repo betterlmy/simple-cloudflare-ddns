@@ -41,15 +41,16 @@ services:
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CF_API_TOKEN` | Yes | Cloudflare API token (DNS edit permission) |
-| `CF_ZONE_ID` | Yes | Cloudflare Zone ID |
-| `CF_RECORD_NAME` | Yes | DNS record to update, e.g. `home.example.com` |
-| `CF_RECORD_TYPE` | Yes | `A` (IPv4) or `AAAA` (IPv6) |
-| `CF_CHECK_INTERVAL` | No | Check interval in seconds (default: `300`) |
-| `CF_TTL` | No | DNS TTL in seconds (default: inherits existing record) |
-| `CF_PROXIED` | No | `true` or `false` (default: inherits existing record) |
+| Variable            | Required | Description                                                        |
+| ------------------- | -------- | ------------------------------------------------------------------ |
+| `CF_API_TOKEN`      | Yes      | Cloudflare API token (DNS edit permission)                         |
+| `CF_ZONE_ID`        | Yes      | Cloudflare Zone ID                                                 |
+| `CF_RECORD_NAME`    | Yes      | DNS record to update, e.g. `home.example.com`                      |
+| `CF_RECORD_TYPE`    | Yes      | `A` (IPv4) or `AAAA` (IPv6)                                        |
+| `CF_CHECK_INTERVAL` | No       | Check interval in seconds (default: `300`)                         |
+| `CF_TTL`            | No       | DNS TTL in seconds (default: inherits existing record)             |
+| `CF_PROXIED`        | No       | `true` or `false` (default: inherits existing record)              |
+| `CF_IP_URLS`        | No       | Comma-separated IP detection service URLs (default: built-in list) |
 
 ## How to Get Cloudflare Credentials
 

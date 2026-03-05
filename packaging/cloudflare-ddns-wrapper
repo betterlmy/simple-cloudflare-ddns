@@ -15,7 +15,8 @@ config_get CF_RECORD_TYPE    main record_type    'A'
 config_get CF_CHECK_INTERVAL main check_interval '300'
 config_get CF_TTL            main ttl            ''
 config_get CF_PROXIED        main proxied        ''
+config_get CF_IP_URLS        main ip_urls        ''
 
-export CF_API_TOKEN CF_ZONE_ID CF_RECORD_NAME CF_RECORD_TYPE CF_CHECK_INTERVAL CF_TTL CF_PROXIED
+export CF_API_TOKEN CF_ZONE_ID CF_RECORD_NAME CF_RECORD_TYPE CF_CHECK_INTERVAL CF_TTL CF_PROXIED CF_IP_URLS
 
 exec /usr/bin/scfddns >> "$LOG_FILE" 2>&1

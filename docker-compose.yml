@@ -12,6 +12,7 @@ services:
       # Optional:
       # - CF_TTL=1
       # - CF_PROXIED=false
+      # - CF_IP_URLS=https://ipv4.icanhazip.com,https://api.ipify.org
       - TZ=Asia/Shanghai
     # 如果只想运行一次，可以覆盖启动命令：
     # command: ["./scfddns", "-once"]

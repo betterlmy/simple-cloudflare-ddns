@@ -38,3 +38,9 @@ images/
 
 # 本地配置（不要打包真实配置）
 config.json
+.env
+
+# IPK 打包相关（Docker 构建不需要）
+packaging/
+*.ipk
+CLAUDE.md
