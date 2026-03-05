@@ -83,7 +83,6 @@ type updatePayload struct {
 }
 
 var lastReqURL string
-var lastIP string
 
 func main() {
 	var runOnce bool
@@ -146,12 +145,6 @@ func runUpdate(config *Config) {
 	}
 	log.Printf("Current public IP: %s", publicIP)
 
-	if lastIP != "" && publicIP == lastIP {
-		log.Println("IP is the same as last time, skipping Cloudflare check.")
-		log.Println("---------------------------------")
-		return
-	}
-
 	record, err := getDNSRecord(config)
 	if err != nil {
 		log.Printf("Error: Failed to get Cloudflare DNS record: %v", err)
@@ -161,14 +154,12 @@ func runUpdate(config *Config) {
 
 	if publicIP == record.Content {
 		log.Println("IP address unchanged, no update needed.")
-		lastIP = publicIP
 	} else {
 		log.Printf("IP address changed from %s to %s. Updating...", record.Content, publicIP)
 		if err := updateDNSRecord(config, record, publicIP); err != nil {
 			log.Printf("Error: Failed to update DNS record: %v", err)
 		} else {
 			log.Println("DNS record updated successfully!")
-			lastIP = publicIP
 		}
 	}
 	log.Println("---------------------------------")
