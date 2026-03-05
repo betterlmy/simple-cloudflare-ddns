@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -107,8 +108,43 @@ jobs:
           files: cloudflare-ddns_*.ipk
           generate_release_notes: true
 
-  docker:
+  feed:
+    needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 下载所有 artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ipk-*
+          path: artifacts
+
+      - name: 安装 opkg-utils
+        run: sudo apt-get install -y opkg-utils
+
+      - name: 生成各架构 Packages 索引
+        run: |
+          mkdir -p feed
+          for arch_dir in artifacts/ipk-*/; do
+            arch=$(basename "$arch_dir" | sed 's/^ipk-//')
+            mkdir -p "feed/$arch"
+            cp "$arch_dir"*.ipk "feed/$arch/"
+            (cd "feed/$arch" && opkg-make-index . > Packages && gzip -k Packages)
+          done
+
+      - name: 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./feed
+          keep_files: false
+
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
