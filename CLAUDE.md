@@ -1,10 +1,11 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository...
 
 ## 文档同步规范
 
-修改环境变量、配置项或核心逻辑后，必须同步更新以下所有文件，不得遗漏：
+!!!修改环境变量、配置项或核心逻辑后，必须同步更新以下所有文件，不得遗漏：
 
 | 文件                                           | 说明                          |
 | ---------------------------------------------- | ----------------------------- |
