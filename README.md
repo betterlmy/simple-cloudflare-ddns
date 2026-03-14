@@ -17,7 +17,7 @@ A minimal Cloudflare Dynamic DNS client written in Go. No dependencies, single b
 
 ## Requirements
 
-- Go 1.18+ (or use Docker)
+- Go 1.18+ (or use Docker )
 - Access to Cloudflare API
 
 ## Configuration
