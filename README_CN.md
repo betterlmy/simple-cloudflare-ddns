@@ -17,7 +17,7 @@
 ## 运行环境
 
 - Go 1.18+（或使用 Docker）
-- 能访问 Cloudflare API 的网络
+- 能访问Cloudflare API的网络
 
 ## 配置
 
