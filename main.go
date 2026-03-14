@@ -53,7 +53,7 @@ func (e CloudflareError) Error() string {
 	return fmt.Sprintf("code=%d message=%s", e.Code, e.Message)
 }
 
-// CloudflareResponse is used for GET dns_records (result is an array)
+// CloudflareResponse is used for GET dns_records (result is an array)   1
 type CloudflareResponse struct {
 	Success bool              `json:"success"`
 	Errors  []CloudflareError `json:"errors"`
@@ -305,6 +305,7 @@ func isValidIPForType(ip, recordType string) bool {
 // getDNSRecord gets specified DNS record information from Cloudflare
 func getDNSRecord(config *Config) (DNSRecord, error) {
 	var record DNSRecord
+	// TODO replace apiURL const
 	apiURL := fmt.Sprintf("https://api.cloudflare.com/client/v4/zones/%s/dns_records?type=%s&name=%s",
 		config.ZoneId, config.RecordType, config.RecordName)
 
